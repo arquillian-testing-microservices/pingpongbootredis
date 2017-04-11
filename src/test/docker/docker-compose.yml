@@ -1,0 +1,11 @@
+pingpongboot:
+  image: lordofthejars/pingpongboot:1.0.0
+  environment:
+    - SPRING_REDIS_HOST=redis
+    - SPRING_REDIS_PORT=6379
+  ports:
+    - "8080:8080"
+  links:
+    - redis:redis
+redis:
+  image: redis:3.2.6
