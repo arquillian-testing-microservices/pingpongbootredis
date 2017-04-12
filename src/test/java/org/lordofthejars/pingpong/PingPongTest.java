@@ -31,7 +31,7 @@ public class PingPongTest {
             .post("/ping")
             .then()
             .assertThat()
-            .statusCode(is(200));
+            .statusCode(is(201));
 
         given()
             .spec(pingpongService)
