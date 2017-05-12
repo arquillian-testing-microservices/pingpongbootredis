@@ -1,8 +1,14 @@
 package org.lordofthejars.pingpong;
 
 import java.util.List;
+import org.arquillian.ape.junit.rule.ArquillianPersistenceRule;
+import org.arquillian.ape.nosql.NoSqlPopulator;
+import org.arquillian.ape.nosql.redis.Redis;
 import org.arquillian.cube.docker.junit.rule.ContainerDslRule;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.junit.After;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +32,24 @@ public class PingPongSpringBootTest {
     public static ContainerDslRule redis = new ContainerDslRule("redis:3.2.6")
                                                 .withPortBinding(6379);
 
+    @Rule
+    public ArquillianPersistenceRule arquillianPersistenceRule = new ArquillianPersistenceRule();
+
     @Autowired
     TestRestTemplate restTemplate;
+
+    @Redis
+    @ArquillianResource
+    NoSqlPopulator populator;
 
     @Test
     public void should_get_pongs() {
 
         // given
 
-        restTemplate.postForObject("/ping", "pong", String.class);
-        restTemplate.postForObject("/ping", "pung", String.class);
+        populator.forServer(redis.getIpAddress(), redis.getBindPort(6379))
+                 .usingDataSet("pings.json")
+                 .execute();
 
         // when
 
@@ -46,6 +60,12 @@ public class PingPongSpringBootTest {
         assertThat(pings)
             .hasSize(2)
             .containsExactlyInAnyOrder("pong", "pung");
+    }
+
+    @After
+    public void clean_database() {
+        populator.forServer(redis.getIpAddress(), redis.getBindPort(6379))
+            .clean();
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

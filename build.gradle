@@ -35,8 +35,12 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-redis:1.5.2.RELEASE'
     testCompile 'org.springframework.boot:spring-boot-starter-test:1.5.2.RELEASE'
     testCompile 'junit:junit:4.12'
-    testCompile 'org.arquillian.cube:arquillian-cube-docker-junit-rule:1.2.0'
-    testCompile 'org.assertj:assertj-core:3.6.2'
+    testCompile 'org.arquillian.cube:arquillian-cube-docker-junit-rule:1.3.0'
+    testCompile 'org.arquillian.ape:arquillian-ape-nosql-redis:2.0.0-alpha.3'
+    testCompile 'org.arquillian.ape:arquillian-ape-junit-rule:2.0.0-alpha.3'
+    testCompile 'com.lordofthejars:nosqlunit-redis:1.0.0-rc.5'
+    testCompile 'redis.clients:jedis:2.9.0'
+    testCompile 'org.assertj:assertj-core:3.7.0'
 }
 
 apply plugin: 'com.bmuschko.docker-remote-api'
